@@ -69,6 +69,14 @@ void FreezePlayer()
 // Reads directional input from the Console and moves the player
 void Move()
 {
+    if (TerminalResized())
+    {
+        Console.Clear();
+        Console.WriteLine("Console was resized. Exiting game...");
+        shouldExit = true;
+        return;
+    }
+
     int lastX = playerX;
     int lastY = playerY;
 
