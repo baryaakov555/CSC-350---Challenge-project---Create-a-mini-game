@@ -113,6 +113,12 @@ void Move()
     // Draw the player at the new location
     Console.SetCursorPosition(playerX, playerY);
     Console.Write(player);
+
+    if (ConsumedFood())
+    {
+        ChangePlayer();
+        ShowFood();
+    }
 }
 
 // Clears the console, displays the food and player
@@ -122,4 +128,9 @@ void InitializeGame()
     ShowFood();
     Console.SetCursorPosition(0, 0);
     Console.Write(player);
+}
+
+bool ConsumedFood()
+{
+    return playerX == foodX && playerY == foodY;
 }
