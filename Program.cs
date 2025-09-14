@@ -27,7 +27,13 @@ int food = 0;
 InitializeGame();
 while (!shouldExit)
 {
-    Move();
+    int speed = 1;
+    if (ShouldSpeedUp())
+    {
+        speed = 3;
+    }
+
+    Move(speed);
 }
 
 // Returns true if the Terminal was resized 
@@ -64,10 +70,12 @@ void FreezePlayer()
 {
     System.Threading.Thread.Sleep(1000);
     player = states[0];
+    Console.SetCursorPosition(playerX, playerY);
+    Console.Write(player);
 }
 
 // Reads directional input from the Console and moves the player
-void Move()
+void Move(int speed = 1)
 {
     if (TerminalResized())
     {
@@ -75,6 +83,11 @@ void Move()
         Console.WriteLine("Console was resized. Exiting game...");
         shouldExit = true;
         return;
+    }
+
+    if (ShouldFreeze())
+    {
+        FreezePlayer();
     }
 
     int lastX = playerX;
@@ -89,10 +102,10 @@ void Move()
             playerY++;
             break;
         case ConsoleKey.LeftArrow:
-            playerX--;
+            playerX-= speed;
             break;
         case ConsoleKey.RightArrow:
-            playerX++;
+            playerX+= speed;
             break;
         case ConsoleKey.Escape:
             shouldExit = true;
@@ -132,5 +145,20 @@ void InitializeGame()
 
 bool ConsumedFood()
 {
-    return playerX == foodX && playerY == foodY;
+    int foodLength = foods[food].Length;
+    int playerLength = player.Length;
+
+    bool sameRow = (playerY == foodY);
+    bool overlap = playerX < foodX + foodLength && (playerX + playerLength) > foodX;
+
+    return sameRow && overlap;
+}
+
+bool ShouldFreeze()
+{
+    return player == "(X_X)";
+}
+bool ShouldSpeedUp()
+{
+    return player == "(^-^)";
 }
